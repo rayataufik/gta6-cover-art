@@ -1,103 +1,97 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Golden Hour Cover Studio — GTA-style cover art maker</title>
+<title>Golden Hour — Cover Studio</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="topbar">
   <div class="brand">
-    <h1>Golden Hour</h1>
+    <h1>GOLDEN HOUR</h1>
     <p>Cover Studio — turn your photo into GTA-style cover art</p>
   </div>
-  <div class="top-actions">
-    <button id="exportBtn" class="export">Export PNG</button>
-  </div>
+  <button id="exportBtn" class="export-btn" type="button">Export PNG</button>
 </header>
 
 <main class="studio">
-  <section class="stage-col">
-    <div id="dropZone" class="stage-frame">
-      <canvas id="stage" width="720" height="720"></canvas>
+  <section class="stage">
+    <div class="canvas-wrap">
+      <canvas id="coverCanvas" width="1080" height="1080"></canvas>
     </div>
     <p class="hint">Click a panel to select it — drag to pan the photo, scroll to zoom. Drop photos anywhere on the cover.</p>
-    <p id="errorBox" class="error" hidden></p>
   </section>
 
-  <section class="controls">
-    <div class="group">
+  <aside class="panel">
+    <section class="card">
       <h2>1 · Your photo</h2>
-      <label class="file-btn" for="fileInput">Choose photos…</label>
-      <input id="fileInput" type="file" accept="image/*" multiple hidden>
+      <label class="file-btn" for="photoInput">Choose photos…</label>
+      <input id="photoInput" type="file" accept="image/*" multiple hidden>
       <p class="note">Or drop image files onto the cover. Photos stay on your machine — nothing is uploaded.</p>
-      <div id="sampleGroup" class="btn-row">
-        <span class="row-label">Try a sample:</span>
-        <button type="button" data-value="pier">Pier dusk</button>
-        <button type="button" data-value="boulevard">Boulevard</button>
-      </div>
-    </div>
+      <p class="samples">Try a sample:
+        <button type="button" data-sample="pier">Pier dusk</button>
+        <button type="button" data-sample="boulevard">Boulevard</button>
+      </p>
+    </section>
 
-    <div class="group">
+    <section class="card">
       <h2>2 · Layout</h2>
-      <div id="layoutGroup" class="btn-row wrap">
-        <button type="button" data-value="strips">3 strips</button>
-        <button type="button" data-value="grid">2 × 2 grid</button>
-        <button type="button" data-value="hero">Big left + 2</button>
-        <button type="button" data-value="single">Full bleed</button>
+      <div class="btn-row" id="layoutRow">
+        <button type="button" data-layout="strips" class="on">3 strips</button>
+        <button type="button" data-layout="grid">2 × 2 grid</button>
+        <button type="button" data-layout="hero">Big left + 2</button>
+        <button type="button" data-layout="single">Full bleed</button>
       </div>
-      <div class="field-row">
-        <label for="panelPhoto">Selected panel</label>
-        <select id="panelPhoto"></select>
-        <label for="photoChoice">Photo in it</label>
-        <select id="photoChoice"></select>
-      </div>
-      <label class="slider-label" for="zoomSlider">Zoom the selected panel</label>
-      <input id="zoomSlider" type="range" min="100" max="400" value="120">
-    </div>
+      <label class="field">Selected panel
+        <select id="panelSelect"></select>
+      </label>
+      <label class="field">Photo in it
+        <select id="photoSelect"></select>
+      </label>
+      <label class="field">Zoom the selected panel
+        <input id="zoomSlider" type="range" min="1" max="3" step="0.01" value="1">
+      </label>
+    </section>
 
-    <div class="group">
+    <section class="card">
       <h2>3 · Caption</h2>
-      <label class="field-label" for="titleInput">Title</label>
-      <input id="titleInput" type="text" value="SUNSET HEIST" maxlength="30">
-      <label class="field-label" for="subtitleInput">Subtitle</label>
-      <input id="subtitleInput" type="text" value="A GOLDEN HOUR STORY" maxlength="48">
-      <label class="slider-label" for="titleSize">Title size</label>
-      <input id="titleSize" type="range" min="70" max="140" value="100">
-      <div id="styleGroup" class="btn-row wrap">
-        <span class="row-label">Lettering:</span>
-        <button type="button" data-value="white">White</button>
-        <button type="button" data-value="sunset">Sunset</button>
-        <button type="button" data-value="neon">Neon</button>
+      <label class="field">Title
+        <input id="titleInput" type="text" value="SUNSET HEIST" maxlength="40">
+      </label>
+      <label class="field">Subtitle
+        <input id="subtitleInput" type="text" value="A GOLDEN HOUR STORY" maxlength="60">
+      </label>
+      <label class="field">Title size
+        <input id="sizeSlider" type="range" min="0.6" max="1.6" step="0.01" value="1">
+      </label>
+      <div class="btn-row" id="posRow">
+        <button type="button" data-pos="bottom" class="on">Bottom</button>
+        <button type="button" data-pos="top">Top</button>
       </div>
-      <div id="posGroup" class="btn-row wrap">
-        <span class="row-label">Caption at:</span>
-        <button type="button" data-value="bottom">Bottom</button>
-        <button type="button" data-value="top">Top</button>
+      <div class="btn-row" id="styleRow">
+        <button type="button" data-style="white">White</button>
+        <button type="button" data-style="sunset" class="on">Sunset</button>
+        <button type="button" data-style="neon">Neon</button>
       </div>
-    </div>
+    </section>
 
-    <div class="group">
+    <section class="card">
       <h2>4 · Grade &amp; size</h2>
-      <div id="gradeGroup" class="btn-row wrap">
-        <button type="button" data-value="sunset">Sunset</button>
-        <button type="button" data-value="neon">Neon</button>
-        <button type="button" data-value="noir">Noir</button>
+      <div class="btn-row" id="gradeRow">
+        <button type="button" data-grade="sunset" class="on">Sunset</button>
+        <button type="button" data-grade="neon">Neon</button>
+        <button type="button" data-grade="noir">Noir</button>
       </div>
-      <div id="sizeGroup" class="btn-row wrap">
-        <button type="button" data-value="1080x1080">1080 × 1080</button>
-        <button type="button" data-value="1080x1350">1080 × 1350</button>
-        <button type="button" data-value="1920x1080">1920 × 1080</button>
+      <div class="btn-row" id="sizeRow">
+        <button type="button" data-size="1080x1080" class="on">1080 × 1080</button>
+        <button type="button" data-size="1080x1350">1080 × 1350</button>
+        <button type="button" data-size="1920x1080">1920 × 1080</button>
       </div>
-      <p class="note">Export writes a PNG at the size above — ready to post.</p>
-    </div>
-  </section>
+      <p class="note">Every photo is yours or a free sample, and the lettering is Anton, an open-licensed font — no third-party logos, artwork or fonts are used anywhere in this app.</p>
+    </section>
+  </aside>
 </main>
-
-<footer class="foot">
-  <p>Golden Hour Cover Studio — an original cover maker. No Rockstar artwork, logo or font is used here; the lettering is Anton under the SIL Open Font License.</p>
-</footer>
 
 <script src="src/cover.js"></script>
 <script src="src/main.js"></script>
